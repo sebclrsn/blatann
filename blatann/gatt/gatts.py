@@ -166,6 +166,7 @@ class GattsCharacteristic(gatt.Characteristic):
                                             "{} not set up for notifications or indications".format(self.uuid))
 
         self._value_attr.set_value(value)
+        self._value = value
         if notify_client and self.client_subscribed and not self._value_attr.read_in_process:
             return self.notify(None)
 
@@ -184,9 +185,9 @@ class GattsCharacteristic(gatt.Characteristic):
                  also contains the ID of the sent notification which is used in the on_notify_complete event
         """
         if isinstance(data, BleDataStream):
-            value = data.value
+            data = data.value
         if isinstance(data, str):
-            value = data.encode(self.string_encoding)
+            data = data.encode(self.string_encoding)
         if not self.notifiable:
             raise InvalidOperationException("Cannot notify client. "
                                             "{} not set up for notifications or indications".format(self.uuid))
